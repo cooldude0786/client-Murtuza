@@ -1,0 +1,22 @@
+{
+  "name": "saudicommer",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "khizar shaikh",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.16.4",
+    "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "daisyui": "^5.0.50"
+  }
+}
