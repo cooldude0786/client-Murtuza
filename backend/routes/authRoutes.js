@@ -1,19 +1,28 @@
-// // config/index.js
-// const dotenv = require('dotenv');
-
-// dotenv.config();
-
-// module.exports = {
-//     port: process.env.PORT || 5000,
-//     mongoURI: process.env.MONGO_URI,
-//     jwtSecret: process.env.JWT_SECRET || 'fallback_secret_key_change_me',
-//     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h'
-// };
-
 const express = require('express');
 const router = express.Router();
+const { check } = require('express-validator');
+const authController = require('../controllers/authController');
 
-router.get('/lived', (req, res) => res.send('lived'));  
+// @route   POST /api/auth/signup
+router.post('/signup', [
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password must be 6 or more characters').isLength({ min: 6 }),
+], authController.signupUser);
+
+// @route   POST /api/auth/verify-otp
+router.post('/verify-otp', [
+    check('email', 'Email is required').isEmail(),
+    check('otp', 'OTP is required').isLength({ min: 6, max: 6 }),
+], authController.verifyOtp);
+
+// @route   POST /api/auth/login
+router.post('/login', [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password is required').exists(),
+], authController.loginUser);
+
+router.get('/lived', (req, res) => res.send('lived'));
 
 // --- THIS IS THE FIX ---
 // Make sure this line is at the end of every route file.

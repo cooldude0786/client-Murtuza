@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useState, } from 'react';
+import apiClient from '../api/axios'; // 1. Import your new apiClient
 // Simple SVG icon components for social media links
 const FacebookIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="fill-current">
@@ -13,7 +13,36 @@ const YouTubeIcon = () => (
     </svg>
 );
 
+
 const Footer = () => {
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleSubscribe = async () => {
+        if (!email.trim()) {
+            setMessage("Email is required");
+            return;
+        }
+
+        setLoading(true);
+        setMessage(null);
+
+        try {
+            const response = await apiClient.post('/subscriber', { email });
+
+            setMessage("Subscribed successfully!");
+            setEmail('');
+        } catch (error) {
+            const errorMsg =
+                error.response?.data?.error || "Something went wrong. Please try again.";
+            setMessage(errorMsg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
         <footer className="py-12 px-4 text-secondary-content/100 bg-secondary" style={{
             // backgroundColor: 'oklch(23.27% 0.0249 284.3)',
@@ -63,9 +92,9 @@ const Footer = () => {
 
                 {/* Column 4: Newsletter */}
                 <div>
-                    <h6 className="footer-title text-lg font-semi bold  mb-4">Subscribe</h6>
-                    <p className="text-sm mb-4 text-base-content/70">
-                        Invite customers to join your mailing list.
+                    <h6 className="footer-title text-lg font-semibold mb-4">Subscribe</h6>
+                    <p className="text-sm mb-4 text-base-300/70">
+                        Join for updates on mails.
                     </p>
                     <div className="form-control">
                         <div className="input-group">
@@ -73,12 +102,25 @@ const Footer = () => {
                                 type="text"
                                 placeholder="your@email.com"
                                 className="input input-bordered w-full pr-16 placeholder:text-base-content/70"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
-
-                            <button className="btn btn-primary">Sign Up</button>
+                            <button
+                                className="btn btn-primary hover:bg-base-300 hover:text-base-content transition:color duration-300"
+                                onClick={handleSubscribe}
+                                disabled={loading}
+                            >
+                                {loading ? "Signing Up..." : "Sign Up"}
+                            </button>
                         </div>
+                        {message && (
+                            <p className={`mt-2 text-sm ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
+                                {message}
+                            </p>
+                        )}
                     </div>
                 </div>
+
 
             </div>
         </footer>

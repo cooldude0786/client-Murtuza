@@ -178,3 +178,39 @@ exports.searchProductsByName = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+
+/**
+ * @desc    Get a list of all unique brands (vendors)
+ * @route   GET /api/products/brands
+ * @access  Public
+ */
+exports.getAllBrands = async (req, res) => {
+  try {
+    // .distinct() is an efficient way to get all unique values for a field
+    const brands = await Product.distinct('vendor');
+    res.json(brands);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+/**
+ * @desc    Get all products for a specific brand
+ * @route   GET /api/products/brand/:brandName
+ * @access  Public
+ */
+exports.getProductsByBrand = async (req, res) => {
+  try {
+    const products = await Product.find({ vendor: req.params.brandName });
+    if (!products.length) {
+      return res.status(404).json({ msg: 'No products found for this brand' });
+    }
+    res.json(products);
+  } catch (err)
+ {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

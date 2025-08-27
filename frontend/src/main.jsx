@@ -5,13 +5,17 @@ import App from './App.jsx'
 import { ThemeProvider } from "@material-tailwind/react"; // <-- Import ThemeProvider
 import { BrowserRouter } from 'react-router-dom'; // 1. Import BrowserRouter
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider> 
-      <BrowserRouter> 
-        <CartProvider>{ /* this is context api for managing the cart details*/}
-          <App />
-        </CartProvider>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider> {/* Wrap with AuthProvider */}
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>,

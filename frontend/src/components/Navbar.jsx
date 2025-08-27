@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 // SVG Icon components for clarity
 const SearchIcon = () => (
@@ -35,6 +36,7 @@ const CloseIcon = () => (
 
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(''); // 2. Add state for the search input
   const navigate = useNavigate(); // 3. Initialize the navigate function
@@ -80,13 +82,14 @@ const Navbar = () => {
 
           {/* Action Icons (Desktop) */}
           <div className="hidden md:flex items-center space-x-5">
-            <a
-              href="/login"
-              className="flex items-center text-base-content/80 hover:text-primary transition-colors duration-200"
-            >
-              <UserIcon />
-              <span className="ml-2 font-medium">Login/Signup</span>
-            </a>
+            {user ? (
+              <button onClick={logout} className="btn btn-ghost">Logout</button>
+            ) : (
+              <a href="/login" className="flex items-center ...">
+                <UserIcon />
+                <span className="ml-2 font-medium">Login/Signup</span>
+              </a>
+            )}
             <a
               href="/cart"
               className="flex items-center text-base-content/80 hover:text-primary transition-colors duration-200"
@@ -122,10 +125,14 @@ const Navbar = () => {
                 className="w-full bg-gray-100 border-2 border-transparent rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary transition-colors" />
             </form>
             {/* Action Links (Mobile) */}
-            <a href="/login" className="flex items-center text-base-content  hover:bg-base-200  transition-colors py-2">
-              <UserIcon />
-              <span className="ml-2 font-medium">Login/Signup</span>
-            </a>
+            {user ? (
+              <button onClick={logout} className="btn btn-ghost">Logout</button>
+            ) : (
+              <a href="/login" className="flex items-center ...">
+                <UserIcon />
+                <span className="ml-2 font-medium">Login/Signup</span>
+              </a>
+            )}
             <a href="/cart" className="flex items-center text-base-content  hover:bg-base-200  transition-colors py-2">
               <CartIcon />
               <span className="ml-2 font-medium">Cart</span>

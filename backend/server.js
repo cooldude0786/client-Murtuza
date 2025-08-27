@@ -6,7 +6,7 @@ const connectDB = require('./config/db');
 const config = require('./config');
 const path = require('path'); // Add this at the top with other requires
 const contactRoutes = require('./routes/contactRoutes');
-
+require('dotenv').config(); 
 
 // --- Import individual route files directly ---
 const productRoutes = require('./routes/productRoutes');
@@ -14,6 +14,9 @@ const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const contactUserRoutes = require('./routes/contactUserRoutes');
+const subscriberRoutes = require("./routes/subscriberRoutes");
+
 // --- End Import individual route files ---
 
 // Custom 404 handler middleware
@@ -55,6 +58,9 @@ const startServer = async () => {
         app.use('/contact', contactRoutes);
         app.use('/auth', authRoutes);
         app.use('/category', categoryRoutes);
+        app.use('/contactUser', contactUserRoutes);
+        app.use('/subscriber', subscriberRoutes);
+        app.use('/auth', authRoutes);
         // --- End Mount Individual API Routes ---
 
         // Simple root route

@@ -15,7 +15,7 @@ const socialIcons = {
 };
 
 const API_URL = 'http://localhost:5000/contact';
-
+const API_URL_FOR_CONTACT_FORM = 'http://localhost:5000/contactUser';
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState({});
@@ -66,13 +66,17 @@ const ContactPage = () => {
 
     setSubmissionStatus('submitting');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // send request to backend
+      await axios.post(API_URL_FOR_CONTACT_FORM, formData);
+
       setSubmissionStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      // setFormData({ name: '', email: '', message: '' });
     } catch (error) {
+      console.error("Error submitting form:", error);
       setSubmissionStatus('error');
     }
   };
+
 
   return (
     <div className="bg-base-100 py-16 px-4">
@@ -136,8 +140,8 @@ const ContactPage = () => {
                   value={formData.message}
                   onChange={handleChange}
                 ></textarea>
-                {errors.message && <p className="text-error text-sm mt-1">{errors.message}</p>}
               </div>
+              {errors.message && <p className="text-error p-5 text-sm mt-1">{errors.message}</p>}
 
               {/* Button & Status */}
               <div>

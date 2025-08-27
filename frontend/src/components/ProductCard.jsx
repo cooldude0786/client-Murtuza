@@ -26,7 +26,7 @@ const ProductCard = ({ product, from }) => {
 
   return (
     <div
-      className={`card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl group ${(from === "bestsellers") ? "" : "sm:w-[20%] md:w-[40%] lg:w-[20%] "}`}
+      className={`card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl group ${(from !== undefined ) ? "" : "sm:w-[20%] md:w-[40%] lg:w-[20%] "}`}
     >      <figure className="overflow-hidden">
         <img
           src={displayImage}
