@@ -9,7 +9,7 @@ const BrandsPage = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await apiClient.get('/product/brands');
+        const response = await apiClient.get('/api/products/brands');
         setBrands(response.data);
       } catch (error) {
         console.error("Failed to fetch brands:", error);

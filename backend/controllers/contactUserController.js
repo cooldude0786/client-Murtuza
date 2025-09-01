@@ -3,7 +3,6 @@ const Contact = require("../models/contact.js");
 
 // Create new contact
 const createContact = async (req, res) => {
-    console.log("called")
   try {
     const { name, email, message } = req.body;
     console.log(name)
@@ -15,7 +14,7 @@ const createContact = async (req, res) => {
     });
     res.status(201).json(contact);
   } catch (err) {
-    console.log(err)
+    console.log(err.message)
     res.status(500).json({ error: err.message });
   }
 };

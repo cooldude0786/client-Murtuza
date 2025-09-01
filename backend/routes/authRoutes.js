@@ -22,6 +22,13 @@ router.post('/login', [
     check('password', 'Password is required').exists(),
 ], authController.loginUser);
 
+
+// @route   POST /api/auth/login
+router.post('/resend-otp', [
+    check('email', 'Please include a valid email').isEmail(),
+], authController.resendOtp);
+
+
 router.get('/lived', (req, res) => res.send('lived'));
 
 // --- THIS IS THE FIX ---

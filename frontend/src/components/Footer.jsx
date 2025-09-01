@@ -63,9 +63,9 @@ const Footer = () => {
                         </a>
                     </div>
                     <div className="flex flex-col space-y-1 text-sm">
-                        <a href="mailto:sales.sa@anaum.com" className="link link-hover">sales.sa@anaum.com</a>
-                        <a href="tel:00966126516555" className="link link-hover">00966 12 6516555</a>
-                        <a href="tel:00966126525556" className="link link-hover">00966 12 6525556</a>
+                        <a href="mailto:sales.sa@anaum.com" className="link link-hover">khizarshaikh2922@gmail.com</a>
+                        <a href="tel:00966126516555" className="link link-hover">+91 8828045311</a>
+                        <a href="tel:00966126525556" className="link link-hover">+91 8828045311</a>
                     </div>
                 </div>
 
@@ -84,9 +84,9 @@ const Footer = () => {
                 <div>
                     <h6 className="footer-title text-lg font-semi bold  mb-4">My Account</h6>
                     <ul className="space-y-2 text-sm">
-                        <li><a href="/cart" className="link link-hover">View Cart</a></li>
-                        <li><a href="/signin" className="link link-hover">Sign In</a></li>
-                        <li><a href="/orders" className="link link-hover">Order Status</a></li>
+                        <li><a href="/" className="link link-hover">View Cart</a></li>
+                        <li><a href="/signup" className="link link-hover">Sign In</a></li>
+                        <li><a href="/" className="link link-hover">Order Status</a></li>
                     </ul>
                 </div>
 

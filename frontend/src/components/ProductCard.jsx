@@ -1,33 +1,47 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // 1. Import Link
-import { useCart } from '../context/CartContext'; // 2. Import the useCart hook
+import { motion } from 'framer-motion'; // ✅ Import Framer Motion
+import { useCart } from '../context/CartContext';
+import { API_BASE_URL } from '../api/axios';
+import AddToCartButton from './AddToCardButton'; // 1. Import the new component
+import { Link } from 'react-router-dom';
 
-const API_BASE_URL = 'http://localhost:5000'; // Your backend URL
-
-// Function to convert local backend path to a usable URL
 const getImageUrl = (localPath) => {
-  if (!localPath) return 'https://via.placeholder.com/300'; // Fallback image
-  // This logic assumes your backend serves images from a folder mapped to '/images'
-  // It splits the path and takes the actual filename
+  if (!localPath) return 'https://via.placeholder.com/300';
   const filename = localPath.split('images\\')[1];
   return `${API_BASE_URL}/images/${filename}`;
 };
 
-const ProductCard = ({ product, from }) => {
-  const { cartItems, addToCart, updateQuantity } = useCart(); // 3. Get cart state and functions
+// ✅ Define framer-motion variants
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+};
 
+const ProductCard = ({ product, from }) => {
+  const { cartItems, addToCart, updateQuantity } = useCart();
   const itemInCart = cartItems.find(item => item.id === product.id);
 
-  // Use the first image from the images array as the display image
   const displayImage = product.images && product.images.length > 0
     ? getImageUrl(product.images[0].path)
-    : 'https://placehold.co/300'; // Fallback if no images
-
+    : 'https://placehold.co/300';
 
   return (
-    <div
-      className={`card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl group ${(from !== undefined ) ? "" : "sm:w-[20%] md:w-[40%] lg:w-[20%] "}`}
-    >      <figure className="overflow-hidden">
+    <motion.div
+      className={`card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl group ${(from !== undefined) ? "" : "sm:w-[20%] md:w-[40%] lg:w-[20%] "}`}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }} // ✅ Animate on first view
+    >
+      <figure className="overflow-hidden">
         <img
           src={displayImage}
           alt={product.title}
@@ -35,26 +49,16 @@ const ProductCard = ({ product, from }) => {
         />
       </figure>
       <div className="card-body items-center text-center">
-        {/* Use product.title instead of product.name */}
         <h2 className="card-title text-base-content">{product.title}</h2>
-        {/* Access price from the nested pricing object */}
         <p className="text-lg font-semibold text-primary">${product.pricing.price.toFixed(2)}</p>
         <div className="card-actions">
-          {/* 4. Conditionally render the button or the counter */}
-          {itemInCart ? (
-            <div className="flex items-center space-x-2">
-              <button onClick={() => updateQuantity(product.id, -1)} className="btn btn-sm btn-circle btn-secondary">-</button>
-              <span className="font-bold text-lg">{itemInCart.quantity}</span>
-              <button onClick={() => updateQuantity(product.id, 1)} className="btn btn-sm btn-circle btn-secondary">+</button>
-            </div>
-          ) : (
-            <button onClick={() => addToCart(product)} className="btn btn-secondary">Add to Cart</button>
-          )}
-          {/* 5. Update the "Details" button to be a Link */}
-          <Link to={`/product/${product.id}`} className="btn btn-outline">Details</Link>
+          <AddToCartButton product={product} />
+          <Link to={`/product/${product.id}`} className="btn btn-outline">
+            Details
+          </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

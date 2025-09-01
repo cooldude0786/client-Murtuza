@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // 1. Import axios
 import ProductCard from './ProductCard';
 import SkeletonCard from './SkeletonCard';
-
-const API_URL = 'http://localhost:5000/product/bestseller'; // Your API endpoint
+import apiClient from '../api/axios';
 
 const BestSellers = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false); // ❗ New error state
+  const [error, setError] = useState(false);
 
-
-  // 2. Replace the setTimeout with a real API call
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const response = await axios.get(API_URL);
-        // The actual product data is nested inside the 'product' key
+        const response = await apiClient.get('/api/products/bestseller');
         const productData = response.data.map(item => item.product);
         setProducts(productData);
       } catch (error) {
         console.error("Failed to fetch best sellers:", error);
-        setError(true); // ❗ Set error to true on failure
+        setError(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBestSellers();
-  }, []); // The empty array ensures this runs only once
+  }, []);
 
-
-  if (error) return null;
+  if (error) {
+    return (
+      <div className="p-8 text-center text-error">
+        Could not load best sellers. Please try again later.
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen w-full flex flex-col justify-center items-center py-16 px-4 bg-base-200">
@@ -43,7 +43,15 @@ const BestSellers = () => {
           Handpicked for you from our finest collections.
         </p>
       </div>
+
       <div className="container mx-auto">
+        {/* ✅ Add this block below */}
+        {!loading && products.length === 0 && (
+          <div className="text-center text-base-content/60 py-12 text-lg">
+            No best seller items found
+          </div>
+        )}
+
         <div className="flex flex-wrap justify-center gap-8">
           {loading ? (
             <>
@@ -54,14 +62,13 @@ const BestSellers = () => {
             </>
           ) : (
             products.map(product => (
-              <div key={product.id} className="w-[280px]" >
-                <ProductCard product={product}  from="bestsellers" />
+              <div key={product.id} className="w-[280px]">
+                <ProductCard product={product} from="bestsellers" />
               </div>
             ))
           )}
         </div>
       </div>
-
     </section>
   );
 };

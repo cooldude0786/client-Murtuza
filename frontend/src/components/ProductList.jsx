@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // Your backend API URL
-const API_BASE_URL = 'http://localhost:5000'; // Use the port your Node.js server is running on
+import { API_BASE_URL } from '../api/axios';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);

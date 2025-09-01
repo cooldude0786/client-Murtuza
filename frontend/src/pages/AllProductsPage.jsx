@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import SkeletonCard from '../components/SkeletonCard';
-
-const API_BASE_URL = 'http://localhost:5000/product/all'; // Base API URL
+import apiClient from '../api/axios';
 
 const AllProductsPage = () => {
   const { subSlug } = useParams(); // Get slug from URL, e.g., "calipers"
@@ -15,7 +13,7 @@ const AllProductsPage = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/${subSlug}`);
+        const response = await apiClient.get(`/api/products/all/${subSlug}`);
         setProducts(response.data);
       } catch (error) {
         console.error(`Failed to fetch products for ${subSlug}:`, error);

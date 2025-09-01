@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 // SVG Icon components for clarity
 const SearchIcon = () => (
@@ -31,6 +32,22 @@ const MenuIcon = () => (
 const CloseIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+const LogoutIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"
+    />
   </svg>
 );
 
@@ -81,15 +98,19 @@ const Navbar = () => {
           </form>
 
           {/* Action Icons (Desktop) */}
-          <div className="hidden md:flex items-center space-x-5">
+          <div data-testid="desktop-nav" className="hidden md:flex items-center space-x-5">
             {user ? (
-              <button onClick={logout} className="btn btn-ghost">Logout</button>
+              <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
+                Logout
+                <LogoutIcon />
+              </button>
             ) : (
-              <a href="/login" className="flex items-center ...">
+              <Link to="/login" className="btn btn-ghost flex items-center gap-2">
                 <UserIcon />
                 <span className="ml-2 font-medium">Login/Signup</span>
-              </a>
+              </Link>
             )}
+
             <a
               href="/cart"
               className="flex items-center text-base-content/80 hover:text-primary transition-colors duration-200"
@@ -110,7 +131,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu (Collapsible) - now inside the rounded container */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out transform 
+        <div data-testid="mobile-nav" className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out transform 
   ${isMenuOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2'}
 `}>
           <div className="px-4 pt-2 pb-4 space-y-4 border-t bg-base-200">
@@ -126,7 +147,11 @@ const Navbar = () => {
             </form>
             {/* Action Links (Mobile) */}
             {user ? (
-              <button onClick={logout} className="btn btn-ghost">Logout</button>
+              <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
+                <LogoutIcon />
+                Logout
+              </button>
+
             ) : (
               <a href="/login" className="flex items-center ...">
                 <UserIcon />

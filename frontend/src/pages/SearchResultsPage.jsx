@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import SkeletonCard from '../components/SkeletonCard';
-
-const API_URL = 'http://localhost:5000/product/search';
+import apiClient from '../api/axios';
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams();
@@ -19,7 +17,7 @@ const SearchResultsPage = () => {
     const fetchSearchResults = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}?name=${query}`);
+        const response = await apiClient.get(`/api/products/search?name=${query}`);
         setProducts(response.data);
       } catch (error) {
         // Handle cases where no products are found (API returns 404)

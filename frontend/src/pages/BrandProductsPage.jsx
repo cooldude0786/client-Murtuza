@@ -14,7 +14,7 @@ const BrandProductsPage = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await apiClient.get(`/product/brand/${brandName}`);
+                const response = await apiClient.get(`/api/products/brand/${brandName}`);
                 setProducts(response.data);
             } catch (error) {
                 if (error.response && error.response.status === 404) {

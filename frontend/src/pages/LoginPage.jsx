@@ -37,16 +37,26 @@ const LoginPage = () => {
 
     try {
       setLoading(true);
-      const a = await login(email, password);
-      alert(a)
-      navigate('/');
+      const result = await login(email, password);
+      if (result.success) {
+        navigate('/'); // normal success flow
+      } else {
+        if (result.status.status === 403) {
+          // Redirect to verify OTP page
+          navigate('/verify-otp', { state: { email, fromLogin: true } });
+          // you can pass email via state so user doesn’t re-enter
+        } else {
+          setError(result || 'Login failed. Please try again.');
+        }
+      }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Invalid email or password.');
+      setError('Something went wrong. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
@@ -104,9 +114,8 @@ const LoginPage = () => {
               setError('');
               setMessage('');
             }}
-            className={`input input-bordered w-full ${
-              error && !isValidEmail(email) ? 'input-error' : ''
-            }`}
+            className={`input input-bordered w-full ${error && !isValidEmail(email) ? 'input-error' : ''
+              }`}
             required
           />
 
@@ -121,9 +130,8 @@ const LoginPage = () => {
                   setPassword(e.target.value);
                   setError('');
                 }}
-                className={`input input-bordered w-full mt-4 ${
-                  error && password.length < 6 ? 'input-error' : ''
-                }`}
+                className={`input input-bordered w-full mt-4 ${error && password.length < 6 ? 'input-error' : ''
+                  }`}
                 required
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

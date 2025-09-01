@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { motion,AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import ProductImageSlider from '../components/ProductImageSlider';
 import { getImageUrl } from '../utils/image'; // Import from your new utils file
 import { Link } from 'react-router-dom';
+import apiClient from '../api/axios';
 
-const API_BASE_URL = "http://localhost:5000/product"; // Using the correct backend route
+import AddToCartButton from '../components/AddToCardButton'; // 1. Import the new component
 
 const ProductDetailPage = () => {
   const { productId } = useParams();
@@ -19,7 +19,7 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/byid/${productId}`);
+        const response = await apiClient.get(`api/products/byid/${productId}`);
         setProduct(response.data);
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -41,7 +41,7 @@ const ProductDetailPage = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-10 items-start">
-        
+
         <div className="md:w-1/2 w-full">
           <ProductImageSlider images={images} />
         </div>
@@ -55,14 +55,7 @@ const ProductDetailPage = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-base-content">{product.title}</h1>
           <p className="text-2xl text-primary font-semibold">${product.pricing.price.toFixed(2)}</p>
           <p className="text-base-content/80 leading-relaxed">{product.description}</p>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => addToCart(product)}
-            className="btn btn-primary btn-lg"
-          >
-            Add to Cart
-          </motion.button>
+          <AddToCartButton product={product} />
         </motion.div>
       </div>
     </div>

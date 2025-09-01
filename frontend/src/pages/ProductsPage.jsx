@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CategoryCard from '../components/CategoryCard';
-
+import apiClient from '../api/axios';
 const API_URL = 'http://localhost:5000/category';
 
 const ProductsPage = () => {
@@ -11,7 +11,7 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(API_URL);
+        const response = await apiClient.get('/api/categories');
         setCategories(response.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
