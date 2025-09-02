@@ -54,18 +54,25 @@ pipeline {
                         bat 'git add -A'
 
                         script {
-                            def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
-                            if (changes) {
-                                echo "Found changes, creating commit..."
-                                bat 'git commit -m "feat(ci): Add latest production build"'
-
-                                echo "Pushing changes to remote repository..."
-                                bat('git push https://' + GIT_USER + ':' + GIT_TOKEN + '@github.com/cooldude0786/client-Murtuza.git main')
-                                echo "Changes pushed successfully."
+                        def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
+                        if (changes) {
+                            echo "Found changes, creating commit..."
+                            // use returnStatus so failure won't break the pipeline
+                            def commitStatus = bat(script: 'git commit -m "feat(ci): Add latest production build"', returnStatus: true)
+                            if (commitStatus == 0) {
+                                echo "Commit created successfully."
                             } else {
-                                echo "No new changes to commit."
+                                echo "Commit skipped or failed with status: ${commitStatus}"
                             }
+
+                            echo "Pushing changes to remote repository..."
+                            bat('git push https://' + GIT_USER + ':' + GIT_TOKEN + '@github.com/cooldude0786/client-Murtuza.git main')
+
+                        } else {
+                            echo "No new changes to commit."
                         }
+                    }
+
                     }
                 }
             }
