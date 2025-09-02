@@ -29,6 +29,7 @@ const ProductDetailPage = () => {
     };
     fetchProduct();
   }, [productId]);
+  // console.log(product)
 
   const images = useMemo(() => {
     if (!product?.images?.length) return ["https://placehold.co/600"];
@@ -37,7 +38,7 @@ const ProductDetailPage = () => {
 
   if (loading) return <div className="text-center p-10"><span className="loading loading-lg"></span></div>;
   if (!product) return <div className="text-center p-10">Product not found.</div>;
-
+console.log(images)
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-10 items-start">

@@ -29,7 +29,7 @@ const Footer = () => {
         setMessage(null);
 
         try {
-            const response = await apiClient.post('/subscriber', { email });
+            const response = await apiClient.post('/api/subscriber', { email });
 
             setMessage("Subscribed successfully!");
             setEmail('');

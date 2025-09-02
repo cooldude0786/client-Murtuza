@@ -1,5 +1,5 @@
 // --- 1. IMPORTS ---
-require('dotenv').config(); // Should be at the very top
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -22,31 +22,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Serve static images from the 'src/images' folder
-app.use('/images', express.static(path.join(__dirname, 'scr/images')));
+
+// Serve static images from the 'src/images' folder (Corrected 'scr' to 'src')
+app.use('/images', express.static(path.join(__dirname, 'src/images')));
 
 // --- 4. API ROUTES ---
-app.use('/api/products', productRoutes); // Corrected base route
+app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes); // Corrected base route
+app.use('/api/categories', categoryRoutes);
 app.use('/api/contactUser', contactUserRoutes);
 app.use('/api/subscriber', subscriberRoutes);
 
-// --- 5. PRODUCTION DEPLOYMENT CONFIGURATION ---
+// --- 5. PRODUCTION/DEVELOPMENT ROUTES ---
 if (process.env.NODE_ENV === 'production') {
-  // Set the static folder for the built React app
-  app.use(express.static(path.join(__dirname, 'public')));
-
-  // A "catch-all" to serve index.html for any non-API request
+  // Serve the static files from the React app
+  // Handle all other routes by serving the React app's index.html
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
   });
 } else {
+  app.use(express.static(path.join(__dirname, 'public')));
+  // A root route for development mode to confirm the API is running
   app.get('/', (req, res) => {
-    res.send('API is running in development mode...');
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+    // res.send('API is running in development mode...');
   });
 }
 
@@ -78,7 +79,7 @@ const startServer = async () => {
       console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to connect to database:', error);
+    console.error('Failed to connect to the database. Exiting...', error);
     process.exit(1);
   }
 };

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import CategoryCard from '../components/CategoryCard';
 import apiClient from '../api/axios';
-const API_URL = 'http://localhost:5000/category';
 
 const ProductsPage = () => {
   const [categories, setCategories] = useState([]);

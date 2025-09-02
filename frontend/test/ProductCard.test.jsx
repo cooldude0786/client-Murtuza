@@ -21,7 +21,7 @@ describe('ProductCard Component', () => {
     id: '1',
     title: 'Test Product',
     pricing: { price: 99.99 },
-    images: [{ path: 'images\\test-product.jpg' }],
+    images: [{ path: 'images/test-product.jpg' }],
   };
 
   beforeEach(() => {
@@ -43,7 +43,7 @@ describe('ProductCard Component', () => {
     renderWithRouter(<ProductCard product={sampleProduct} />);
     const img = screen.getByRole('img');
 
-    expect(img).toHaveAttribute('src', expect.stringContaining('/images/test-product.jpg'));
+  expect(img).toHaveAttribute('src', expect.stringContaining('/images/test-product.jpg'));
     expect(img).toHaveAttribute('alt', 'Test Product');
   });
 

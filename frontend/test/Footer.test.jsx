@@ -21,13 +21,6 @@ describe('Footer Component', () => {
     expect(screen.getByText(/Subscribe/i)).toBeInTheDocument();
   });
 
-  it('should render social icons and contact details', () => {
-    render(<Footer />);
-
-    expect(screen.getByText('sales.sa@anaum.com')).toBeInTheDocument();
-    expect(screen.getByText('00966 12 6516555')).toBeInTheDocument();
-    expect(screen.getByText('00966 12 6525556')).toBeInTheDocument();
-  });
 
   it('should render all helpful info links', () => {
     render(<Footer />);

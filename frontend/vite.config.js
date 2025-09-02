@@ -18,5 +18,4 @@ export default defineConfig({
     setupFiles: "./src/components/__tests__/BestSellers.js", // Run before each test
   },
 
-
 })

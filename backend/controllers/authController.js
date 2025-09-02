@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const otpGenerator = require('otp-generator');
-const sendEmail = require('../scr/utils/mailer');
+const sendEmail = require('../src/utils/mailer');
 // Signup a new user
 
 
@@ -53,7 +53,7 @@ exports.signupUser = async (req, res) => {
       <p style="font-size: 14px; color: #999;">This code will expire in <strong>10 minutes</strong>.</p>
       <hr style="margin: 30px 0;">
       <p style="font-size: 12px; color: #aaa;">If you didn’t request this, you can safely ignore this email.</p>
-    </div>
+    </div>  
   `;
 
       const plainMessage = `

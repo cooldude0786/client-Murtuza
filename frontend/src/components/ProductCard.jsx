@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const getImageUrl = (localPath) => {
   if (!localPath) return 'https://via.placeholder.com/300';
-  const filename = localPath.split('images\\')[1];
+  const filename = localPath.split('images/')[1];
   return `${API_BASE_URL}/images/${filename}`;
 };
 
@@ -32,7 +32,6 @@ const ProductCard = ({ product, from }) => {
   const displayImage = product.images && product.images.length > 0
     ? getImageUrl(product.images[0].path)
     : 'https://placehold.co/300';
-
   return (
     <motion.div
       className={`card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl group ${(from !== undefined) ? "" : "sm:w-[20%] md:w-[40%] lg:w-[20%] "}`}
