@@ -14,7 +14,7 @@ dist/
 node_modules/
 
 # React
-public/
+
 src/setupProxy.js
 src/setupTests.js
 src/index.css
