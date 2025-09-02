@@ -7,21 +7,21 @@ pipeline {
     }
 
     stages {
-        // stage('Install Frontend Dependencies') {
-        //     steps {
-        //         dir("${env.PROJECT_DIR}\\frontend") {
-        //             bat 'npm install'
-        //         }
-        //     }
-        // }
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir("${env.PROJECT_DIR}\\frontend") {
+                    bat 'npm install'
+                }
+            }
+        }
 
-        // stage('Run Frontend Tests') {
-        //     steps {
-        //         dir("${env.PROJECT_DIR}\\frontend") {
-        //             bat 'npm test'
-        //         }
-        //     }
-        // }
+        stage('Run Frontend Tests') {
+            steps {
+                dir("${env.PROJECT_DIR}\\frontend") {
+                    bat 'npm test'
+                }
+            }
+        }
 
         stage('Build React App') {
             steps {
