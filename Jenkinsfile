@@ -42,37 +42,36 @@ pipeline {
             }
         }
 
-        stage('Commit and Push Build Artifacts') {
+        stage('Commit and Push All Changes') {
             steps {
-                dir('D:/project/ClinetMurtuzaBhai') { // Use the correct path for your project
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                dir(env.PROJECT_DIR) {
+                    withCredentials([usernamePassword(credentialsId: env.GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                         echo "Configuring Git user..."
                         bat 'git config --global user.name "Jenkins Build"'
                         bat 'git config --global user.email "jenkins@localhost"'
-                        
-                        echo "Staging the new 'public' folder..."
-                        bat 'git add backend/public'
-                        
-                        // Use a script block for conditional logic
+
+                        echo "Staging all changes..."
+                        bat 'git add -A'
+
                         script {
-                            // Check if there are any changes to commit
                             def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
                             if (changes) {
                                 echo "Found changes, creating commit..."
                                 bat 'git commit -m "feat(ci): Add latest production build"'
+
+                                echo "Pushing changes to remote repository..."
+                                // ✅ fixed URL (removed duplicate https://)
+                                bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@github.com/cooldude0786/client-Murtuza.git main"
                             } else {
                                 echo "No new changes to commit."
                             }
                         }
-                        
-                        echo "Pushing changes to remote repository..."
-                        // NOTE: Remember to replace 'your-username/your-repo.git'
-                        bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@https://github.com/cooldude0786/client-Murtuza.git main"
                     }
                 }
             }
         }
     }
+
     post {
         always {
             echo 'Pipeline finished.'

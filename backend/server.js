@@ -40,8 +40,15 @@ app.use('/api/subscriber', subscriberRoutes);
 if (process.env.NODE_ENV === 'production') {
   // Serve the static files from the React app
   // Handle all other routes by serving the React app's index.html
-  app.get('*', (req, res) => {
+  // app.get('*', (req, res) => {
+  // });
+  app.use(express.static(path.join(__dirname, 'public')));
+  // A root route for development mode to confirm the API is running
+  app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
   });
+
+
 } else {
   app.use(express.static(path.join(__dirname, 'public')));
   // A root route for development mode to confirm the API is running
@@ -50,7 +57,7 @@ if (process.env.NODE_ENV === 'production') {
     // res.send('API is running in development mode...');
   });
 }
-
+// sdfds
 // --- 6. CUSTOM ERROR HANDLING ---
 const notFound = (req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
