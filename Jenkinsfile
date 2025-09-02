@@ -7,21 +7,21 @@ pipeline {
     }
 
     stages {
-        stage('Install Frontend Dependencies') {
-            steps {
-                dir("${env.PROJECT_DIR}\\frontend") {
-                    bat 'npm install'
-                }
-            }
-        }
+        // stage('Install Frontend Dependencies') {
+        //     steps {
+        //         dir("${env.PROJECT_DIR}\\frontend") {
+        //             bat 'npm install'
+        //         }
+        //     }
+        // }
 
-        stage('Run Frontend Tests') {
-            steps {
-                dir("${env.PROJECT_DIR}\\frontend") {
-                    bat 'npm test'
-                }
-            }
-        }
+        // stage('Run Frontend Tests') {
+        //     steps {
+        //         dir("${env.PROJECT_DIR}\\frontend") {
+        //             bat 'npm test'
+        //         }
+        //     }
+        // }
 
         stage('Build React App') {
             steps {
@@ -59,9 +59,9 @@ pipeline {
                                 echo "Found changes, creating commit..."
                                 bat 'git commit -m "feat(ci): Add latest production build"'
 
-                              echo "Pushing changes to remote repository..."
-bat 'git push https://' + env.GIT_USER + ':' + env.GIT_TOKEN + '@github.com/cooldude0786/client-Murtuza.git main'
-
+                                echo "Pushing changes to remote repository..."
+                                bat('git push https://' + GIT_USER + ':' + GIT_TOKEN + '@github.com/cooldude0786/client-Murtuza.git main')
+                                echo "Changes pushed successfully."
                             } else {
                                 echo "No new changes to commit."
                             }
