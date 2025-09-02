@@ -56,7 +56,7 @@ pipeline {
                         bat 'git add backend/public'
                         bat 'git diff-index --quiet HEAD || git commit -m "feat(ci): Add latest production build"'
                         // NOTE: Remember to replace 'your-username/your-repo.git'
-                        bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@github.com/your-username/your-repo.git main"
+                        bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@github.com/https://github.com/cooldude0786/client-Murtuza.git main"
                     }
                 }
             }
