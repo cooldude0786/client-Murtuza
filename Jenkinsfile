@@ -59,9 +59,9 @@ pipeline {
                                 echo "Found changes, creating commit..."
                                 bat 'git commit -m "feat(ci): Add latest production build"'
 
-                                echo "Pushing changes to remote repository..."
-                                // ✅ fixed URL (removed duplicate https://)
-                                bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@github.com/cooldude0786/client-Murtuza.git main"
+                              echo "Pushing changes to remote repository..."
+bat 'git push https://' + env.GIT_USER + ':' + env.GIT_TOKEN + '@github.com/cooldude0786/client-Murtuza.git main'
+
                             } else {
                                 echo "No new changes to commit."
                             }
