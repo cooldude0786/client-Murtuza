@@ -2,15 +2,11 @@ pipeline {
     agent any
 
     environment {
-        // The absolute path to your project on the Jenkins server
         PROJECT_DIR = 'D:\\project\\ClinetMurtuzaBhai'
-        // The ID of the credentials you created in Jenkins
         GITHUB_CREDENTIALS_ID = 'github-credentials' 
     }
 
     stages {
-    
-
         stage('Install Frontend Dependencies') {
             steps {
                 dir("${env.PROJECT_DIR}\\frontend") {
@@ -46,38 +42,29 @@ pipeline {
             }
         }
 
-        stage('Stage and Commit Build Artifacts') {
+        stage('Commit and Push Build Artifacts') {
             steps {
-                dir(env.PROJECT_DIR) {
-                    echo "Staging and committing newly created 'public' folder..."
-                    bat 'git add backend/public'
-                    bat 'git commit -m "feat: Add latest production build"'
-                }
-            }
-        }
-
-        stage('Push to Remote') {
-            steps {
+                // ---vvv- THIS IS THE FIX -vvv---
+                // Add the dir() step to run Git commands in the correct directory
                 dir(env.PROJECT_DIR) {
                     withCredentials([usernamePassword(credentialsId: env.GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-                        echo "Pushing changes to remote repository..."
-                        // NOTE: Replace 'your-username/your-repo.git' with your actual repository details
+                        echo "Configuring Git user..."
+                        bat 'git config --global user.name "Jenkins Build"'
+                        bat 'git config --global user.email "jenkins@localhost"'
+                        
+                        echo "Committing and pushing the new 'public' folder..."
+                        bat 'git add backend/public'
+                        bat 'git diff-index --quiet HEAD || git commit -m "feat(ci): Add latest production build"'
+                        // NOTE: Remember to replace 'your-username/your-repo.git'
                         bat "git push https://${env.GIT_USER}:${env.GIT_TOKEN}@github.com/your-username/your-repo.git main"
                     }
                 }
             }
         }
     }
-
     post {
         always {
             echo 'Pipeline finished.'
-        }
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
