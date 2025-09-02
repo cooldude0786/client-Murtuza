@@ -9,31 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('Configure Git') {
-            steps {
-                echo "Setting Git safe directory and user identity..."
-                bat "git config --global --add safe.directory ${env.PROJECT_DIR}"
-                bat 'git config --global user.name "Jenkins Build"'
-                bat 'git config --global user.email "jenkins@localhost"'
-            }
-        }
-
-        stage('Check and Commit Changes') {
-            steps {
-                dir(env.PROJECT_DIR) {
-                    script {
-                        def gitStatus = bat(script: 'git status --porcelain', returnStdout: true).trim()
-                        if (gitStatus) {
-                            echo "Found uncommitted changes. Staging and committing..."
-                            bat 'git add .'
-                            bat 'git commit -m "Build Prep: Commit outstanding changes"'
-                        } else {
-                            echo "Working directory is clean. No commit needed."
-                        }
-                    }
-                }
-            }
-        }
+    
 
         stage('Install Frontend Dependencies') {
             steps {
