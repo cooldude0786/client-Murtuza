@@ -1,6 +1,6 @@
 const Order = require('../models/order');
 const StoreConfig = require('../models/StoreConfig');
-const User = require('../models/User');
+const User = require('../models/user');
 const sendEmail = require('../src/utils/mailer');
 
 exports.createOrder = async (req, res) => {
