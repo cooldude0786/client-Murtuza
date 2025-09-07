@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // @route   POST /api/auth/signup
 router.post('/signup', [
@@ -28,6 +29,7 @@ router.post('/resend-otp', [
     check('email', 'Please include a valid email').isEmail(),
 ], authController.resendOtp);
 
+router.get('/me', authMiddleware, authController.getLoggedInUser);
 
 router.get('/lived', (req, res) => res.send('lived'));
 

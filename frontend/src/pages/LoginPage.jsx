@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate,useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import apiClient from '../api/axios';
 
 const isValidEmail = (email) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -13,8 +14,10 @@ const LoginPage = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, resetPassword } = useAuth();
+  const { login, resend } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // 2. Get the location object
+  const from = location.state?.from?.pathname || "/";
 
   const validateInputs = () => {
     if (!isValidEmail(email)) {
@@ -39,7 +42,7 @@ const LoginPage = () => {
       setLoading(true);
       const result = await login(email, password);
       if (result.success) {
-        navigate('/'); // normal success flow
+        navigate(from, { replace: true });
       } else {
         if (result.status.status === 403) {
           // Redirect to verify OTP page
@@ -60,25 +63,35 @@ const LoginPage = () => {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     if (!isValidEmail(email)) {
-      setError('Please enter a valid email to reset password.');
+      setError("Please enter a valid email.");
       return;
     }
 
     try {
       setLoading(true);
-      await resetPassword(email);
-      setMessage('If an account exists, a reset link was sent to your email.');
+
+      const res = await apiClient.post("/api/auth/resend-otp", { email });
+
+      if (res.status === 200) {
+        setMessage(res.data.msg || "OTP has been sent to your email.");
+      }
     } catch (err) {
-      console.error('Reset password error:', err);
-      setMessage('Failed to send reset email.');
+      console.error("Reset password error:", err);
+
+      if (err.response) {
+        setError(err.response.data.msg || "Failed to send OTP.");
+      } else {
+        setError("Network error. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <motion.div

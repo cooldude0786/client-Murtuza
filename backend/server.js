@@ -14,6 +14,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const contactUserRoutes = require('./routes/contactUserRoutes');
 const subscriberRoutes = require("./routes/subscriberRoutes");
+const configRoutes = require('./routes/configRoutes');
 
 // --- 2. APP INITIALIZATION ---
 const app = express();
@@ -35,6 +36,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/contactUser', contactUserRoutes);
 app.use('/api/subscriber', subscriberRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/config', configRoutes);
 
 // --- 5. PRODUCTION/DEVELOPMENT ROUTES ---
 if (process.env.NODE_ENV === 'production') {

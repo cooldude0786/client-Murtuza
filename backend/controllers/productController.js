@@ -41,6 +41,7 @@ exports.addProduct = async (req, res) => {
 exports.getProductsByCategory = async (req, res) => {
   try {
     const { subSlug } = req.params;
+    console.log(subSlug)
     const products = await Product.find({ 'category.subCategory.slug': subSlug });
 
     if (!products.length) {

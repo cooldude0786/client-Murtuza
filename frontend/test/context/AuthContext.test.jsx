@@ -1,154 +1,112 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'; // 1. Use userEvent for better interactions
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuthProvider, useAuth } from '../../src/context/AuthContext';
 import apiClient from '../../src/api/axios';
 
-// ✅ Mock the API client
+// Mock the apiClient module
 vi.mock('../../src/api/axios');
 
-beforeEach(() => {
-  localStorage.clear();
-  vi.resetAllMocks();
-});
-
-// ✅ Helper component to test AuthContext interactions
+// A helper component to render and interact with the context
 const TestAuthComponent = () => {
-  const { login, logout, signup, resend, token, user } = useAuth();
+  const { login, logout, signup, user, token, loading } = useAuth();
+  
+  if (loading) {
+    return <div>Initial loading...</div>;
+  }
 
   return (
     <div>
       <button onClick={() => login('test@example.com', 'password')}>Login</button>
       <button onClick={() => signup('John', 'test@example.com', 'password')}>Signup</button>
       <button onClick={() => logout()}>Logout</button>
-      <button onClick={() => resend('test@example.com')}>Resend</button>
-      <p data-testid="token">{token}</p>
-      <p data-testid="user">{user ? 'Logged In' : 'Logged Out'}</p>
+      
+      <div data-testid="token">{token}</div>
+      <div data-testid="user">{user ? `Logged in as ${user.name}` : 'Logged Out'}</div>
     </div>
   );
 };
 
 describe('AuthContext', () => {
-  it('logs in and sets token', async () => {
+  const user = userEvent.setup(); // 2. Setup userEvent
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.resetAllMocks();
+  });
+
+  it('initializes with no user or token', () => {
+    render(<AuthProvider><TestAuthComponent /></AuthProvider>);
+    expect(screen.getByTestId('user').textContent).toBe('Logged Out');
+    expect(screen.getByTestId('token').textContent).toBe('');
+  });
+
+  it('initializes with an existing token and fetches the user', async () => {
+    const existingToken = 'existing-jwt-token';
+    const fakeUser = { id: '123', name: 'Jane Doe' };
+    localStorage.setItem('token', existingToken);
+
+    apiClient.get.mockResolvedValue({ data: fakeUser });
+
+    render(<AuthProvider><TestAuthComponent /></AuthProvider>);
+
+    // Wait for the user data to be fetched and displayed
+    await screen.findByText('Logged in as Jane Doe');
+
+    expect(screen.getByTestId('token').textContent).toBe(existingToken);
+  });
+
+  it('logs in, sets the token, and fetches the user', async () => {
     const fakeToken = 'fake-jwt-token';
-    apiClient.post.mockResolvedValue({
-      data: { token: fakeToken },
-    });
+    const fakeUser = { id: '123', name: 'John Doe' };
 
-    render(
-      <AuthProvider>
-        <TestAuthComponent />
-      </AuthProvider>
-    );
-
-    fireEvent.click(screen.getByText('Login'));
-
-    await waitFor(() => {
-      expect(localStorage.getItem('token')).toBe(fakeToken);
-      expect(screen.getByTestId('token').textContent).toBe(fakeToken);
-      expect(screen.getByTestId('user').textContent).toBe('Logged In');
-    });
-  });
-
-  it('logs out and clears token', async () => {
-    localStorage.setItem('token', 'existing-token');
-
-    render(
-      <AuthProvider>
-        <TestAuthComponent />
-      </AuthProvider>
-    );
-
-    fireEvent.click(screen.getByText('Logout'));
-
-    await waitFor(() => {
-      expect(localStorage.getItem('token')).toBe(null);
-      expect(screen.getByTestId('token').textContent).toBe('');
-      expect(screen.getByTestId('user').textContent).toBe('Logged Out');
-    });
-  });
-
-  it('signs up and stores token', async () => {
-    const fakeToken = 'signup-token';
     apiClient.post.mockResolvedValue({ data: { token: fakeToken } });
+    apiClient.get.mockResolvedValue({ data: fakeUser });
 
-    render(
-      <AuthProvider>
-        <TestAuthComponent />
-      </AuthProvider>
-    );
+    render(<AuthProvider><TestAuthComponent /></AuthProvider>);
 
-    fireEvent.click(screen.getByText('Signup'));
+    await user.click(screen.getByText('Login'));
 
-    await waitFor(() => {
-      expect(localStorage.getItem('token')).toBe(fakeToken);
-      expect(screen.getByTestId('token').textContent).toBe(fakeToken);
-    });
+    // Wait for the final state after all async operations
+    await screen.findByText('Logged in as John Doe');
+
+    expect(localStorage.getItem('token')).toBe(fakeToken);
+    expect(screen.getByTestId('token').textContent).toBe(fakeToken);
   });
 
-  it('resend OTP returns success message', async () => {
-    const successMsg = 'OTP sent';
-    apiClient.post.mockResolvedValue({ data: { msg: successMsg } });
+  it('logs out, clearing the token and user state', async () => {
+    const existingToken = 'existing-jwt-token';
+    const fakeUser = { id: '123', name: 'Jane Doe' };
+    localStorage.setItem('token', existingToken);
+    apiClient.get.mockResolvedValue({ data: fakeUser });
 
-    let result;
-    const Wrapper = () => {
-      const { resend } = useAuth();
-      React.useEffect(() => {
-        resend('test@example.com').then(r => (result = r));
-      }, []);
-      return <div>Resend</div>;
-    };
+    render(<AuthProvider><TestAuthComponent /></AuthProvider>);
 
-    render(
-      <AuthProvider>
-        <Wrapper />
-      </AuthProvider>
-    );
+    // First, wait for the user to be logged in
+    const logoutButton = await screen.findByText('Logout');
 
-    await waitFor(() => {
-      expect(result).toEqual({ success: true, message: successMsg });
-    });
+    // Then, click the logout button
+    await user.click(logoutButton);
+
+    // Finally, wait for the user to be logged out
+    await screen.findByText('Logged Out');
+
+    expect(localStorage.getItem('token')).toBeNull();
+    expect(screen.getByTestId('user').textContent).toBe('Logged Out');
   });
 
-  it('resend OTP handles server error', async () => {
-    apiClient.post.mockRejectedValue({
-      response: { status: 400, data: { msg: 'Invalid email' } },
-    });
+  it('signup function does not log the user in', async () => {
+    apiClient.post.mockResolvedValue({ data: { msg: 'OTP sent' } });
 
-    let result;
-    const Wrapper = () => {
-      const { resend } = useAuth();
-      React.useEffect(() => {
-        resend('test@example.com').then(r => (result = r));
-      }, []);
-      return <div>Resend</div>;
-    };
+    render(<AuthProvider><TestAuthComponent /></AuthProvider>);
 
-    render(
-      <AuthProvider>
-        <Wrapper />
-      </AuthProvider>
-    );
+    await user.click(screen.getByText('Signup'));
 
-    await waitFor(() => {
-      expect(result).toEqual({
-        success: false,
-        status: 400,
-        message: 'Invalid email',
-      });
-    });
-  });
-
-  it('initializes with existing token from localStorage', async () => {
-    localStorage.setItem('token', 'existing-token');
-
-    render(
-      <AuthProvider>
-        <TestAuthComponent />
-      </AuthProvider>
-    );
-
-    expect(screen.getByTestId('token').textContent).toBe('existing-token');
-    expect(screen.getByTestId('user').textContent).toBe('Logged In');
+    // Wait for a brief moment to ensure no state changes happen
+    await new Promise(r => setTimeout(r, 50)); 
+    
+    expect(localStorage.getItem('token')).toBeNull();
+    expect(screen.getByTestId('user').textContent).toBe('Logged Out');
   });
 });

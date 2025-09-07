@@ -16,6 +16,10 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import BrandProductsPage from './pages/BrandProductsPage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
+import CartPage from './pages/CartPage';
+import ProtectedRoute from './components/ProtectedRoute'; // <-- ADD THIS LINE
+import MyOrdersPage from './pages/MyOrdersPage';
+
 function App() {
   return (
     // Change bg-gray-100 to a semantic theme color like bg-base-200
@@ -39,6 +43,22 @@ function App() {
           <Route path="/brand/:brandName" element={<BrandProductsPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-orders"
+            element={
+              <ProtectedRoute>
+                <MyOrdersPage />
+              </ProtectedRoute>
+            }
+          />
 
         </Routes>
       </main>

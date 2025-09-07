@@ -13,6 +13,7 @@ const BestSellers = () => {
       try {
         const response = await apiClient.get('/api/products/bestseller');
         const productData = response.data.map(item => item.product);
+        console.log(productData)
         setProducts(productData);
       } catch (error) {
         console.error("Failed to fetch best sellers:", error);

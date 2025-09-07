@@ -77,9 +77,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-4 px-4">
 
           {/* Brand Logo */}
-          <a href="/" className="text-3xl font-extrabold text-base-content">
+          <Link href="/" className="text-3xl font-extrabold text-base-content">
             MyStore
-          </a>
+          </Link>
 
           {/* Search Bar (Desktop) */}
           <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-grow max-w-xl mx-8">
@@ -100,10 +100,13 @@ const Navbar = () => {
           {/* Action Icons (Desktop) */}
           <div data-testid="desktop-nav" className="hidden md:flex items-center space-x-5">
             {user ? (
-              <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
-                Logout
-                <LogoutIcon />
-              </button>
+              <>
+                <Link to="/my-orders" className="font-medium text-base-content/80 hover:text-primary">My Orders</Link>
+                <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
+                  Logout
+                  <LogoutIcon />
+                </button>
+              </>
             ) : (
               <Link to="/login" className="btn btn-ghost flex items-center gap-2">
                 <UserIcon />
@@ -111,15 +114,15 @@ const Navbar = () => {
               </Link>
             )}
 
-            <a
-              href="/cart"
+            <Link
+              to="/cart"
               className="flex items-center text-base-content/80 hover:text-primary transition-colors duration-200"
             >{totalItems > 0 && (
               <span className="indicator-item badge badge-primary">{totalItems}</span>
             )}
               <CartIcon />
               <span className="ml-2 font-medium">Cart</span>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -147,21 +150,26 @@ const Navbar = () => {
             </form>
             {/* Action Links (Mobile) */}
             {user ? (
-              <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
-                <LogoutIcon />
-                Logout
-              </button>
+              <>
+                <button onClick={logout} className="btn btn-ghost flex items-center hover:text-primary gap-2">
+                <Link to="/my-orders" className="font-medium text-base-content/80 ">My Orders</Link>
+                </button>
+                <button onClick={logout} className="btn btn-ghost flex items-center gap-2">
+                  Logout
+                  <LogoutIcon />
+                </button>
+              </>
 
             ) : (
-              <a href="/login" className="flex items-center ...">
+              <Link href="/login" className="flex items-center ...">
                 <UserIcon />
                 <span className="ml-2 font-medium">Login/Signup</span>
-              </a>
+              </Link>
             )}
-            <a href="/cart" className="flex items-center text-base-content  hover:bg-base-200  transition-colors py-2">
+            <Link to="/cart" className="flex items-center text-base-content  hover:bg-base-200  transition-colors py-2">
               <CartIcon />
               <span className="ml-2 font-medium">Cart</span>
-            </a>
+            </Link>
           </div>
         </div>
 

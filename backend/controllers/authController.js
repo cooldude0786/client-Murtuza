@@ -230,10 +230,6 @@ exports.resendOtp = async (req, res) => {
       return res.status(404).json({ msg: 'No account found with this email.' });
     }
 
-    if (user.isVerified) {
-      return res.status(400).json({ msg: 'This account is already verified.' });
-    }
-
     // 🔢 Generate secure 6-digit numeric OTP
     const otp = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
@@ -243,7 +239,6 @@ exports.resendOtp = async (req, res) => {
 
     const OTP_EXPIRY_MINUTES = 10;
     const otpExpires = Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000;
-
     // 📧 Send email
     try {
       await sendEmail({
@@ -268,5 +263,22 @@ exports.resendOtp = async (req, res) => {
   } catch (err) {
     console.error(`[Resend OTP] Server error: ${err.message}`);
     return res.status(500).json({ msg: 'Something went wrong. Please try again later.' });
+  }
+};
+
+
+/**
+ * @desc    Get the logged in user's data
+ * @route   GET /api/auth/me
+ * @access  Private
+ */
+exports.getLoggedInUser = async (req, res) => {
+  try {
+    // req.user.id is attached by the authMiddleware
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 };

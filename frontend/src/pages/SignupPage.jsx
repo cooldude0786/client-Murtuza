@@ -35,7 +35,7 @@ const SignupPage = () => {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             // API call
-            const response = await apiClient.post('/auth/signup', {
+            const response = await apiClient.post('/api/auth/signup', {
                 name: name.trim(),
                 email: email.trim(),
                 password

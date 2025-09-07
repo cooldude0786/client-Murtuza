@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 const getImageUrl = (localPath) => {
   if (!localPath) return 'https://via.placeholder.com/300';
   const filename = localPath.split('images/')[1];
+  console.log(localPath)
   return `${API_BASE_URL}/images/${filename}`;
 };
 
